@@ -1,0 +1,56 @@
+#!/bin/python3.8
+
+"""Ce fichier définit toutes les fonctions qui sont utilisées par le
+programme pendu"""
+
+import pickle
+import os
+import random
+
+from donnees import nb_coups, nom_fichier_scores, liste_mots
+
+
+def welcome():
+    """Fonction affichant l'écran de bienvenue et demandant le 
+    pseudo du joueur"""
+    print("   ***** Bienvenue au jeu du pendu ! *****")
+    pseudo = input("\nComment vous appellez-vous ?\n")
+    return pseudo
+
+def load_score(pseudo):
+    """Fonction qui charge le score du joueur. Si le fichier scores n'existe pas
+    il est crée. Si le joueurs n'existe pas, on lui attribue un score de 0."""
+    if os.path.exists(nom_fichier_scores):
+        with(open(nom_fichier_scores, 'rb')) as file:
+             loader = pickle.Unpickler(file)
+             scores = loader.load()
+             try:
+                 player_score = scores[pseudo]
+                 print(f"Bon retour {pseudo} !", end=' ')
+                 print(f"Votre score est de {scores[pseudo]} !")
+                 return scores
+             except KeyError:
+                 print(f"Un nouveau joueur ! Enchanté {pseudo} !", end=' ')
+                 print("Votre score est actuellement de 0 points.")
+                 print("Pas d'inquiétudes, il augmentera très vite !")
+                 scores[pseudo] = 0
+                 return scores
+    else:
+        open(nom_fichier_scores, 'w').close()
+        print(f"Vous êtes notre premier joueur {pseudo} !",end=' ')
+        print("Votre score est actuellement de 0 points.")
+        print("Pas d'inquiétudes ! Il augmentera très vite !")
+        scores = {pseudo: 0}
+        return scores
+
+def save_score(scores):
+    """Fonction sauvegardant les scores après chaque fin de partie"""
+    with open(nom_fichier_scores, 'wb') as file:
+        saver = pickle.Pickler(file)
+        saver.dump(scores)
+
+def clear_screen():
+    """Fonction utilisée pour changer d'écran. Nettoie tout affichage après
+    que le joueur ait appuyé sur Entrée."""
+    key = input("Appuyez sur Entrée pour continuer.")
+    _ = os.system('clear')

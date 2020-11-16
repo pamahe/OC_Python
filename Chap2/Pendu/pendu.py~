@@ -1,0 +1,10 @@
+#!/bin/python3.8
+
+"""Programme du pendu, les fonctions sont définis dans le fichier fonction.py
+et les variables utiles dans le fichier donnees.py"""
+
+from fonctions import *
+
+pseudo = welcome()
+scores = load_score(pseudo)
+save_score(scores)
